@@ -2,17 +2,27 @@
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
-    <meta name="Content-Type" content="text/html; charset=utf-8" />
-<title>Documentation by YARD 0.6.1</title>
-<link rel="stylesheet" href="css/style.css" type="text/css" media="screen" charset="utf-8" />
-<link rel="stylesheet" href="css/common.css" type="text/css" media="screen" charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>
+  File: README
+  
+    &mdash; Documentation by YARD 0.7.2
+  
+</title>
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" media="screen" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" media="screen" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
   relpath = '';
   if (relpath != '') relpath += '/';
 </script>
-<script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
-<script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
 
   </head>
   <body>
@@ -31,17 +41,22 @@
 </div>
 
       <div id="search">
-  <a id="class_list_link" href="#">Class List</a>
-  <a id="method_list_link" href="#">Method List</a>
-  <a id ="file_list_link" href="#">File List</a>
+  
+    <a id="class_list_link" href="#">Class List</a>
+  
+    <a id="method_list_link" href="#">Method List</a>
+  
+    <a id="file_list_link" href="#">File List</a>
+  
 </div>
-
       <div class="clear"></div>
     </div>
     
     <iframe id="search_frame"></iframe>
     
     <div id="content"><div id='filecontents'><h1 id='friendlyid'>FriendlyId</h1>
+
+<p><a href='http://travis-ci.org/norman/friendly_id'><img alt='Build Status' src='http://travis-ci.org/norman/friendly_id.png' /></a></p>
 
 <p>FriendlyId is the &#8220;Swiss Army bulldozer&#8221; of slugging and permalink plugins for Ruby on Rails. It allows you to create pretty URL&#8217;s and work with human-friendly strings as if they were numeric ids for Active Record models.</p>
 
@@ -55,27 +70,15 @@
 
 <h2 id='friendlyid_features'>FriendlyId Features</h2>
 
-<p>FriendlyId offers many advanced features, including: slug history and versioning, scoped slugs, reserved words, custom slug generators, and excellent Unicode support. For complete information on using FriendlyId, please see the <a href='http://norman.github.com/friendly_id/file.Guide.html'>FriendlyId Guide</a>.</p>
+<p>FriendlyId offers many advanced features, including: slug history and versioning, scoped slugs, reserved words, and custom slug generators.</p>
 
-<p>FriendlyId is compatible with Active Record <strong>2.3.x</strong> and <strong>3.0</strong>.</p>
+<p>FriendlyId is compatible with Active Record <strong>3.0</strong> and <strong>3.1</strong>.</p>
 
-<h2 id='docs_info_and_support'>Docs, Info and Support</h2>
+<h2 id='version_4x'>Version 4.x</h2>
 
-<ul>
-<li><a href='http://norman.github.com/friendly_id/file.Guide.html'>FriendlyId Guide</a></li>
-
-<li><a href='http://norman.github.com/friendly_id'>API Docs</a></li>
-
-<li><a href='http://groups.google.com/group/friendly_id'>Google Group</a></li>
-
-<li><a href='http://github.com/norman/friendly_id/'>Source Code</a></li>
-
-<li><a href='http://github.com/norman/friendly_id/issues'>Issue Tracker</a></li>
-</ul>
+<p>FriendlyId 4.x introduces many changes incompatible with 3.x. If you&#8217;re upgrading, please read the docs to see what&#8217;s new.</p>
 
 <h2 id='rails_quickstart'>Rails Quickstart</h2>
-
-<p>Note that the example below uses Rails 3. But don&#8217;t worry: FriendlyId will continue to support 2.3.x until Rails 3.1 is released.</p>
 
 <pre class="code">gem install friendly_id
 
@@ -83,30 +86,35 @@ rails new my_app
 
 cd my_app
 
-# add to Gemfile
-gem &quot;friendly_id&quot;, &quot;~&gt; 3.2.1&quot;
+gem &quot;friendly_id&quot;, &quot;~&gt; 4.0.0.beta7&quot;
 
-rails generate friendly_id
-rails generate scaffold user name:string cached_slug:string
+
+rails generate scaffold user name:string slug:string
+
+# edit db/migrate/*_create_users.rb
+add_index :users, :slug, :unique =&gt; true
 
 rake db:migrate
 
 # edit app/models/user.rb
 class User &lt; ActiveRecord::Base
-  has_friendly_id :name, :use_slug =&gt; true
+  extend FriendlyId
+  friendly_id :name, :use =&gt; :slugged
 end
 
 User.create! :name =&gt; &quot;Joe Schmoe&quot;
 
 rails server
 
-GET http://0.0.0.0:3000/users/joe-schmoe</pre>
+GET http://localhost:3000/users/joe-schmoe</pre>
 
-<h2 id='sequel_and_datamapper_too'>Sequel and DataMapper, too</h2>
+<h2 id='docs'>Docs</h2>
 
-<p><a href='http://github.com/myabc'>Alex Coles</a> maintains an implemntation of <a href='http://github.com/myabc/friendly_id_datamapper'>FriendlyId for DataMapper</a> that supports almost all the features of the Active Record version.</p>
+<p>The current docs can be found <a href='http://rdoc.info/github/norman/friendly_id/a4128af31d85ee29ad8f/frames'>here</a>.</p>
 
-<p>Norman Clarke maintains an implementation of <a href='http://github.com/norman/friendly_id_sequel'>FriendlyId forSequel</a> with some of the features of the Active Record version.</p>
+<h2 id='benchmarks'>Benchmarks</h2>
+
+<p>The latest benchmarks for FriendlyId are maintained <a href='https://gist.github.com/1129745'>here</a>.</p>
 
 <h2 id='bugs'>Bugs</h2>
 
@@ -119,33 +127,23 @@ GET http://0.0.0.0:3000/users/joe-schmoe</pre>
 
 <li>Stack trace and error message.</li>
 
-<li>Any snippets of relevant model, view or controller code that shows how your are using FriendlyId.</li>
+<li>Any snippets of relevant model, view or controller code that shows how you are using FriendlyId.</li>
 </ul>
 
 <p>If you are able to, it helps even more if you can fork FriendlyId on Github, and add a test that reproduces the error you are experiencing.</p>
 
 <h2 id='credits'>Credits</h2>
 
-<p>FriendlyId was created by Norman Clarke, Adrian Mugnolo, and Emilio Tagua.</p>
+<p>FriendlyId was originally created by Norman Clarke and Adrian Mugnolo, with significant help early in its life by Emilio Tagua. I&#8217;m deeply gratful for the generous contributions over the years from <a href='https://github.com/norman/friendly_id/contributors'>many volunteers</a>.</p>
 
-<p>If you like FriendlyId, please recommend us on Working With Rails:</p>
+<p>Lastly, FriendlyId uses <a href='http://travis-ci.org/'>Travis</a> for continuous integration. It&#8217;s an excellent, free service created by a whole bunch of <a href='https://github.com/travis-ci'>good people</a> - if you&#8217;re not already using it, you should be!</p>
 
-<ul>
-<li><a href='http://bit.ly/recommend-norman'>http://bit.ly/recommend-norman</a></li>
-
-<li><a href='http://bit.ly/recommend-emilio'>http://bit.ly/recommend-emilio</a></li>
-
-<li><a href='http://bit.ly/recommend-adrian'>http://bit.ly/recommend-adrian</a></li>
-</ul>
-
-<p>Thanks!</p>
-
-<p>Copyright (c) 2008-2010, released under the MIT license.</p></div></div>
+<p>Copyright (c) 2008-2011 Norman Clarke, released under the MIT license.</p></div></div>
     
     <div id="footer">
-  Generated on Thu Feb  3 13:03:12 2011 by 
+  Generated on Mon Aug 15 11:37:59 2011 by 
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.6.1 (ruby-1.9.2).
+  0.7.2 (ruby-1.9.2).
 </div>
 
   </body>

@@ -1,0 +1,288 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>
+  Module: FriendlyId::Scoped
+  
+    &mdash; Documentation by YARD 0.7.2
+  
+</title>
+
+  <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" charset="utf-8" />
+
+  <link rel="stylesheet" href="../css/common.css" type="text/css" media="screen" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  relpath = '..';
+  if (relpath != '') relpath += '/';
+</script>
+
+  <script type="text/javascript" charset="utf-8" src="../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <script type="text/javascript" charset="utf-8">
+      if (window.top.frames.main) document.body.className = 'frames';
+    </script>
+    
+    <div id="header">
+      <div id="menu">
+  
+    <a href="../_index.html">Index (S)</a> &raquo; 
+    <span class='title'><span class='object_link'><a href="../FriendlyId.html" title="FriendlyId (module)">FriendlyId</a></span></span>
+     &raquo; 
+    <span class="title">Scoped</span>
+  
+  
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+</div>
+
+      <div id="search">
+  
+    <a id="class_list_link" href="#">Class List</a>
+  
+    <a id="method_list_link" href="#">Method List</a>
+  
+    <a id="file_list_link" href="#">File List</a>
+  
+</div>
+      <div class="clear"></div>
+    </div>
+    
+    <iframe id="search_frame"></iframe>
+    
+    <div id="content"><h1>Module: FriendlyId::Scoped
+  
+  
+  
+</h1>
+
+<dl class="box">
+  
+  
+    
+  
+    
+  
+  
+  
+    <dt class="r1 last">Defined in:</dt>
+    <dd class="r1 last">lib/friendly_id/scoped.rb</dd>
+  
+</dl>
+<div class="clear"></div>
+
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    <p>
+This module allows FriendlyId to generate unique slugs within a scope.
+</p>
+<p>
+This allows, for example, two restaurants in different cities to have the
+slug <tt>joes-diner</tt>:
+</p>
+<pre class="code">
+    <span class='kw'>class</span> <span class='const'>Restaurant</span> <span class='op'>&lt;</span> <span class='const'>ActiveRecord</span><span class='op'>::</span><span class='const'>Base</span>
+      <span class='id extend'>extend</span> <span class='const'>FriendlyId</span>
+      <span class='id belongs_to'>belongs_to</span> <span class='symbol'>:city</span>
+      <span class='id friendly_id'>friendly_id</span> <span class='symbol'>:name</span><span class='comma'>,</span> <span class='symbol'>:use</span> <span class='op'>=&gt;</span> <span class='symbol'>:scoped</span><span class='comma'>,</span> <span class='symbol'>:scope</span> <span class='op'>=&gt;</span> <span class='symbol'>:city</span>
+    <span class='kw'>end</span>
+
+    <span class='kw'>class</span> <span class='const'>City</span> <span class='op'>&lt;</span> <span class='const'>ActiveRecord</span><span class='op'>::</span><span class='const'>Base</span>
+      <span class='id extend'>extend</span> <span class='const'>FriendlyId</span>
+      <span class='id has_many'>has_many</span> <span class='symbol'>:restaurants</span>
+      <span class='id friendly_id'>friendly_id</span> <span class='symbol'>:name</span><span class='comma'>,</span> <span class='symbol'>:use</span> <span class='op'>=&gt;</span> <span class='symbol'>:slugged</span>
+    <span class='kw'>end</span>
+
+    <span class='const'>City</span><span class='period'>.</span><span class='id find'>find</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>seattle</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id restaurants'>restaurants</span><span class='period'>.</span><span class='id find'>find</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>joes-diner</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+    <span class='const'>City</span><span class='period'>.</span><span class='id find'>find</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>chicago</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id restaurants'>restaurants</span><span class='period'>.</span><span class='id find'>find</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>joes-diner</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+</pre>
+<p>
+Without :scoped in this case, one of the restaurants would have the slug
+<tt>joes-diner</tt> and the other would have <tt>joes-diner--2</tt>.
+</p>
+<p>
+The value for the <tt>:scope</tt> option can be the name of a
+<tt>belongs_to</tt> relation, or a column.
+</p>
+<h2>Tips For Working With Scoped Slugs</h2>
+<h3>Finding Records by Friendly ID</h3>
+<p>
+If you are using scopes your friendly ids may not be unique, so a simple
+find like
+</p>
+<pre class="code">
+    <span class='const'>Restaurant</span><span class='period'>.</span><span class='id find'>find</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>joes-diner</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+</pre>
+<p>
+may return the wrong record. In these cases it&#8217;s best to query
+through the relation:
+</p>
+<pre class="code">
+    <span class='ivar'>@city</span><span class='period'>.</span><span class='id restaurants'>restaurants</span><span class='period'>.</span><span class='id find'>find</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>joes-diner</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+</pre>
+<p>
+Alternatively, you could pass the scope value as a query parameter:
+</p>
+<pre class="code">
+    <span class='const'>Restaurant</span><span class='period'>.</span><span class='id find'>find</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>joes-diner</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id where'>where</span><span class='lparen'>(</span><span class='symbol'>:city_id</span> <span class='op'>=&gt;</span> <span class='ivar'>@city</span><span class='period'>.</span><span class='id id'>id</span><span class='rparen'>)</span>
+</pre>
+<h3>Finding All Records That Match a Scoped ID</h3>
+<p>
+Query the slug column directly:
+</p>
+<pre class="code">
+    <span class='const'>Restaurant</span><span class='period'>.</span><span class='id find_all_by_slug'>find_all_by_slug</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>joes-diner</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+</pre>
+<h3>Routes for Scoped Models</h3>
+<p>
+Recall that FriendlyId is a database-centric library, and does not set up
+any routes for scoped models. You must do this yourself in your
+application. Here&#8217;s an example of one way to set this up:
+</p>
+<pre class="code">
+    # in routes.rb
+    resources :cities do
+      resources :restaurants
+    end
+
+    # in views
+    &lt;%= link_to 'Show', [@city, @restaurant] %&gt;
+
+    # in controllers
+    @city = City.find(params[:city_id])
+    @restaurant = @city.restaurants.find(params[:id])
+
+    # URLs:
+    http://example.org/cities/seattle/restaurants/joes-diner
+    http://example.org/cities/chicago/restaurants/joes-diner</pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div><h2>Defined Under Namespace</h2>
+<p class="children">
+   
+    
+      <strong class="modules">Modules:</strong> <span class='object_link'><a href="Scoped/Configuration.html" title="FriendlyId::Scoped::Configuration (module)">Configuration</a></span>, <span class='object_link'><a href="Scoped/SlugSequencer.html" title="FriendlyId::Scoped::SlugSequencer (module)">SlugSequencer</a></span>
+    
+   
+    
+  
+</p>
+
+
+
+
+
+  
+    <h2>
+      Class Method Summary
+      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#included-class_method" title="included (class method)">+ (Object) <strong>included</strong>(model_class) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>
+Sets up behavior and configuration options for FriendlyId&#8217;s scoped
+slugs feature.
+</p>
+</div></span>
+  
+</li>
+
+      
+    </ul>
+  
+
+
+
+  <div id="class_method_details" class="method_details_list">
+    <h2>Class Method Details</h2>
+    
+    
+      <div class="method_details first">
+  <p class="signature first" id="included-class_method">
+  
+    + (<tt>Object</tt>) <strong>included</strong>(model_class) 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Sets up behavior and configuration options for FriendlyId&#8217;s scoped
+slugs feature.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+85
+86
+87
+88
+89
+90
+91
+92</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/friendly_id/scoped.rb', line 85</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id included'>included</span><span class='lparen'>(</span><span class='id model_class'>model_class</span><span class='rparen'>)</span>
+  <span class='id model_class'>model_class</span><span class='period'>.</span><span class='id instance_eval'>instance_eval</span> <span class='kw'>do</span>
+    <span class='id raise'>raise</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>FriendlyId::Scoped is incompatibe with FriendlyId::History</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='kw'>self</span> <span class='op'>&lt;</span> <span class='const'>History</span>
+    <span class='id include'>include</span> <span class='const'>Slugged</span> <span class='kw'>unless</span> <span class='kw'>self</span> <span class='op'>&lt;</span> <span class='const'>Slugged</span>
+    <span class='id friendly_id_config'>friendly_id_config</span><span class='period'>.</span><span class='id class'>class</span><span class='period'>.</span><span class='id send'>send</span> <span class='symbol'>:include</span><span class='comma'>,</span> <span class='const'>Configuration</span>
+    <span class='id friendly_id_config'>friendly_id_config</span><span class='period'>.</span><span class='id slug_sequencer_class'>slug_sequencer_class</span><span class='period'>.</span><span class='id send'>send</span> <span class='symbol'>:include</span><span class='comma'>,</span> <span class='const'>SlugSequencer</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+    
+    <div id="footer">
+  Generated on Mon Aug 15 11:38:00 2011 by 
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.7.2 (ruby-1.9.2).
+</div>
+
+  </body>
+</html>

@@ -1,5 +1,6 @@
 doc
 Gemfile
+Gemfile.lock
 .bundle
 .yardoc
 pkg
