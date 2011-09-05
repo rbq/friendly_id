@@ -36,7 +36,7 @@ released by September, 2011.
 
 ## Docs, Info and Support
 
-* [FriendlyId Guide](http://norman.github.com/friendly_id/file.Guide.html)
+* [FriendlyId Guide](https://github.com/norman/friendly_id/blob/3.x/Guide.md)
 * [API Docs](http://norman.github.com/friendly_id)
 * [Source Code](http://github.com/norman/friendly_id/)
 * [Issue Tracker](http://github.com/norman/friendly_id/issues)
